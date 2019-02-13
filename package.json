@@ -19,12 +19,12 @@
     "edit",
     "webpack"
   ],
-  "author": "Noah-Jerome Lotzer <n.lotzer@neusta.de>",
+  "author": "Sonia Barret",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/noahlotzer/react-simple-boilerplate/issues"
+    "url": "https://github.com/sogbdn/ChattyApp"
   },
-  "homepage": "https://github.com/noahlotzer/react-simple-boilerplate",
+  "homepage": "https://github.com/sogbdn/ChattyApp",
   "engines": {
     "node": ">=6.0.0"
   },
@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "react": "15.4.2",
-    "react-dom": "15.4.2"
+    "react-dom": "15.4.2",
+    "uuid": "^3.3.2"
   }
 }
