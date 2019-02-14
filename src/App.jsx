@@ -9,27 +9,22 @@ class App extends Component {
   // Set initial state so the component is initially "loading"
   constructor(props) {
     super(props);
-    // ONLY time to assi gn directly to state:
+    // ONLY time to assign directly to state:
     this.state = {
       currentUser: { name: "Jane" },
-      messages: [{ id: uuid.v1(), username: "Bob", content: "Hey everyone!" }]
+      messages: [] // messages coming from the server will be stored here as they arrive
     };
   }
   addUsername = username => {
     this.setState({
-      currentUser: { ...this.state.currentUser, username: username }
+      currentUser: { ...this.state.currentUser, name: username }
     });
   };
-
   addMessage = message => {
     const newMessage = {
-      id: uuid.v1(),
-      username: this.state.currentUser.username,
+      username: this.state.currentUser.name,
       content: message
     };
-    this.setState({
-      messages: [...this.state.messages, newMessage]
-    });
     this.socketServer.send(JSON.stringify(newMessage));
   };
 
@@ -38,15 +33,18 @@ class App extends Component {
   componentDidMount() {
     console.log("componentDiMount </App>");
 
-    // Connects the application to the WebSocket server
-    // Store the WebSocket connection object (this.socket)
+    // Connects the application to the WebSocket server and store the WebSocket connection object (this.socket)
     this.socketServer = new WebSocket("ws://localhost:3001/", "protocolOne");
     //this.socketServer.onopen = event => {
     // };
 
-    this.socketServer.onmessage = message => {
-      const serverMessage = JSON.parse(data);
-      console.log("Connected to server");
+    // Incomming message listener
+    this.socketServer.onmessage = event => {
+      const serverMessage = JSON.parse(event.data);
+      console.log(serverMessage);
+      this.setState({
+        messages: [...this.state.messages, serverMessage]
+      });
     };
 
     setTimeout(() => {

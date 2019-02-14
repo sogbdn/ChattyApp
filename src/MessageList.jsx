@@ -3,7 +3,6 @@ import Message from "./Message.jsx";
 
 class MessageList extends Component {
   render() {
-    console.log(this.props);
     const msgs = this.props.messages;
     //const msgList = msgs.map(msg => <li> {msg.content} </li>);
 
