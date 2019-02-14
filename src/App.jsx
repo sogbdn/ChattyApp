@@ -15,16 +15,13 @@ class App extends Component {
       messages: [{ id: uuid.v1(), username: "Bob", content: "Hey everyone!" }]
     };
   }
-  updateUsername = username => {
-    //this.sendUpdateUsername(this.state.currentUser.username, username);
+  addUsername = username => {
     this.setState({
       currentUser: { ...this.state.currentUser, username: username }
     });
   };
 
-  updateMessage = message => {
-    //this.sendUpdateUsername(this.state.currentUser.message, message);
-    console.log("update");
+  addMessage = message => {
     const newMessage = {
       id: uuid.v1(),
       username: this.state.currentUser.username,
@@ -33,14 +30,26 @@ class App extends Component {
     this.setState({
       messages: [...this.state.messages, newMessage]
     });
+    this.socketServer.send(JSON.stringify(newMessage));
   };
 
-  //Code called when the App component is first rendered on the page
+  //Called when the App component is first rendered on the page
   //The setTimeout waits 3 seconds and then adds a new message
   componentDidMount() {
-    console.log("componentDidMount <App />");
+    console.log("componentDiMount </App>");
+
+    // Connects the application to the WebSocket server
+    // Store the WebSocket connection object (this.socket)
+    this.socketServer = new WebSocket("ws://localhost:3001/", "protocolOne");
+    //this.socketServer.onopen = event => {
+    // };
+
+    this.socketServer.onmessage = message => {
+      const serverMessage = JSON.parse(data);
+      console.log("Connected to server");
+    };
+
     setTimeout(() => {
-      console.log("Simulating incoming message");
       // Add a new message to the list of messages in the data store
       const newMessage = {
         id: 3,
@@ -59,18 +68,15 @@ class App extends Component {
     return (
       <div>
         <Nav />
-        <Message
-          updateUsername={this.updateUsername}
-          updateMessage={this.updateMessage}
-        />
+        <Message addUsername={this.addUsername} addMessage={this.addMessage} />
         <MessageList
           messages={this.state.messages}
-          updateMessage={this.updateMessage}
+          addMessage={this.addMessage}
         />
         <ChatBar
           currentUser={this.state.currentUser}
-          updateUsername={this.updateUsername}
-          updateMessage={this.updateMessage}
+          addUsername={this.addUsername}
+          addMessage={this.addMessage}
         />
       </div>
     );
