@@ -23,9 +23,8 @@ class App extends Component {
     const objectClient = {
       type: "postNotification",
       username: username,
-      content: `${
-        this.state.currentUser.name
-      } changed their name to ${username}`
+      content: `${this.state.currentUser.name ||
+        "anonymous"} changed their name to ${username}`
     };
 
     this.socketServer.send(JSON.stringify(objectClient));
@@ -39,8 +38,14 @@ class App extends Component {
     this.socketServer.send(JSON.stringify(newMessage));
   };
 
+  updateMessages = message => {
+    this.setState({
+      messages: [...this.state.messages, message]
+    });
+    console.log(message);
+  };
+
   //Called when the App component is first rendered on the page
-  //The setTimeout waits 3 seconds and then adds a new message
   componentDidMount() {
     console.log("componentDiMount </App>");
 
@@ -60,6 +65,7 @@ class App extends Component {
 
       switch (serverMessage.type) {
         case "incomingMessage":
+          this.updateMessages(serverMessage);
           break;
         case "incomingNotification":
           this.setState({ messages: [...this.state.messages, serverMessage] });
@@ -67,22 +73,9 @@ class App extends Component {
           break;
         default:
           // show an error in the console if the message type is unknown
-          throw new Error("Unknown event type " + data.type);
+          throw new Error("Unknown event type " + serverMessage.type);
       }
     };
-
-    //setTimeout(() => {
-    // Add a new message to the list of messages in the data store
-    //const newMessage = {
-    // id: 3,
-    //  username: "Michelle",
-    //  content: "Hello there!"
-    //};
-    //const messages = this.state.messages.concat(newMessage);
-    // Update the state of the app component.
-    // Calling setState will trigger a call to render() in App and all child components.
-    //this.setState({ messages: messages });
-    //}, 3000);
   }
 
   render() {
@@ -90,12 +83,10 @@ class App extends Component {
     return (
       <div>
         <Nav />
-        <Message addUsername={this.addUsername} addMessage={this.addMessage} />
         <MessageList
           messages={this.state.messages}
           addMessage={this.addMessage}
         />
-
         <ChatBar
           currentUser={this.state.currentUser}
           addUsername={this.addUsername}

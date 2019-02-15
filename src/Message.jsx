@@ -2,9 +2,7 @@ import React, { Component } from "react";
 
 class Message extends Component {
   render() {
-    console.log(this.props.username);
-    console.log(this.props.content);
-    console.log(this.props.messageType);
+    console.log(this.props);
     if (this.props.messageType === "incomingMessage") {
       return (
         <div>
@@ -17,7 +15,7 @@ class Message extends Component {
           </main>
         </div>
       );
-    } else if (true) {
+    } else if (this.props.messageType === "incomingNotification") {
       return (
         <div className="notification">
           <span className="notification-content">{this.props.content} </span>

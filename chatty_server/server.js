@@ -33,17 +33,25 @@ wss.on("connection", ws => {
 
   ws.on("message", data => {
     const clientMessage = JSON.parse(data);
+    console.log(clientMessage);
     //console.log(`User ${clientMessage.username} said ${clientMessage.content}`);
     switch (clientMessage.type) {
       case "postNotification":
-        const sendingMessage = {
+        const sendingNotif = {
           content: clientMessage.content,
           id: uuidv1(),
           type: "incomingNotification"
         };
-        wss.broadcast(JSON.stringify(sendingMessage));
+        wss.broadcast(JSON.stringify(sendingNotif));
         break;
       case "postMessage":
+        const sendingMessage = {
+          content: clientMessage.content,
+          username: clientMessage.username,
+          id: uuidv1(),
+          type: "incomingMessage"
+        };
+        wss.broadcast(JSON.stringify(sendingMessage));
         break;
       default:
         console.log("Unknow type of message!");
