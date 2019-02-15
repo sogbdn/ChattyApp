@@ -8,6 +8,7 @@ class Nav extends Component {
           <a href="/" className="navbar-brand">
             Chatty
           </a>
+          <div id="nbClient">{this.props.nbClientConnected} users online </div>
         </nav>
       </div>
     );

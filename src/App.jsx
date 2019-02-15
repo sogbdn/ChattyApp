@@ -26,9 +26,15 @@ class App extends Component {
       content: `${this.state.currentUser.name ||
         "anonymous"} changed their name to ${username}`
     };
-
     this.socketServer.send(JSON.stringify(objectClient));
   };
+
+  addClient = username => {
+    this.setState({
+      messages: [...this.state.messages, message]
+    });
+  };
+
   addMessage = message => {
     const newMessage = {
       type: "postMessage",
@@ -71,6 +77,20 @@ class App extends Component {
           this.setState({ messages: [...this.state.messages, serverMessage] });
           console.log(serverMessage);
           break;
+        case "connectionUpdate":
+          console.log(serverMessage);
+          const newNotification = {
+            content: serverMessage.content,
+            type: "incomingNotification",
+            id: serverMessage.id
+          };
+
+          this.setState({
+            nbClientConnected: serverMessage.nbClientConnected,
+            messages: [...this.state.messages, newNotification]
+          });
+
+          break;
         default:
           // show an error in the console if the message type is unknown
           throw new Error("Unknown event type " + serverMessage.type);
@@ -82,7 +102,7 @@ class App extends Component {
     //if (this.state.loading) {
     return (
       <div>
-        <Nav />
+        <Nav nbClientConnected={this.state.nbClientConnected} />
         <MessageList
           messages={this.state.messages}
           addMessage={this.addMessage}
