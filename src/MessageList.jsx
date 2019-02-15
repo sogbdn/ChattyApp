@@ -7,7 +7,12 @@ class MessageList extends Component {
     //const msgList = msgs.map(msg => <li> {msg.content} </li>);
 
     const msgList = msgs.map(msg => (
-      <Message key={msg.id} username={msg.username} content={msg.content} />
+      <Message
+        key={msg.id}
+        username={msg.username}
+        content={msg.content}
+        messageType={msg.type}
+      />
     ));
 
     return (

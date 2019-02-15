@@ -20,7 +20,6 @@ class ChatBar extends Component {
   handleNameSubmit = event => {
     if (event.key === "Enter") {
       this.props.addUsername(this.state.username);
-      this.setState({ username: "" }); // Clear the field
     }
   };
   handleMessageSubmit = event => {

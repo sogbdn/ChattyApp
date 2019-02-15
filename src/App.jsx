@@ -11,7 +11,7 @@ class App extends Component {
     super(props);
     // ONLY time to assign directly to state:
     this.state = {
-      currentUser: { name: "Jane" },
+      currentUser: { username: "Anonymous" },
       messages: [] // messages coming from the server will be stored here as they arrive
     };
   }
@@ -19,9 +19,20 @@ class App extends Component {
     this.setState({
       currentUser: { ...this.state.currentUser, name: username }
     });
+    // client sends object with type, username and content
+    const objectClient = {
+      type: "postNotification",
+      username: username,
+      content: `${
+        this.state.currentUser.name
+      } changed their name to ${username}`
+    };
+
+    this.socketServer.send(JSON.stringify(objectClient));
   };
   addMessage = message => {
     const newMessage = {
+      type: "postMessage",
       username: this.state.currentUser.name,
       content: message
     };
@@ -35,30 +46,43 @@ class App extends Component {
 
     // Connects the application to the WebSocket server and store the WebSocket connection object (this.socket)
     this.socketServer = new WebSocket("ws://localhost:3001/", "protocolOne");
-    //this.socketServer.onopen = event => {
-    // };
+
+    this.socketServer.onopen = event => {
+      console.log("Connected to server");
+    };
 
     // Incomming message listener
     this.socketServer.onmessage = event => {
+      console.log(event);
+      // The socket event is encoded as a JSON string.
+      // This line turns it into an object
       const serverMessage = JSON.parse(event.data);
-      console.log(serverMessage);
-      this.setState({
-        messages: [...this.state.messages, serverMessage]
-      });
+
+      switch (serverMessage.type) {
+        case "incomingMessage":
+          break;
+        case "incomingNotification":
+          this.setState({ messages: [...this.state.messages, serverMessage] });
+          console.log(serverMessage);
+          break;
+        default:
+          // show an error in the console if the message type is unknown
+          throw new Error("Unknown event type " + data.type);
+      }
     };
 
-    setTimeout(() => {
-      // Add a new message to the list of messages in the data store
-      const newMessage = {
-        id: 3,
-        username: "Michelle",
-        content: "Hello there!"
-      };
-      const messages = this.state.messages.concat(newMessage);
-      // Update the state of the app component.
-      // Calling setState will trigger a call to render() in App and all child components.
-      this.setState({ messages: messages });
-    }, 3000);
+    //setTimeout(() => {
+    // Add a new message to the list of messages in the data store
+    //const newMessage = {
+    // id: 3,
+    //  username: "Michelle",
+    //  content: "Hello there!"
+    //};
+    //const messages = this.state.messages.concat(newMessage);
+    // Update the state of the app component.
+    // Calling setState will trigger a call to render() in App and all child components.
+    //this.setState({ messages: messages });
+    //}, 3000);
   }
 
   render() {
@@ -71,6 +95,7 @@ class App extends Component {
           messages={this.state.messages}
           addMessage={this.addMessage}
         />
+
         <ChatBar
           currentUser={this.state.currentUser}
           addUsername={this.addUsername}

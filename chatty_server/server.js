@@ -1,7 +1,7 @@
 // server.js
 const express = require("express");
 const SocketServer = require("ws").Server;
-const uuidv1 = require('uuid/v1');
+const uuidv1 = require("uuid/v1");
 
 // Set the port to 3001
 const PORT = 3001;
@@ -21,7 +21,7 @@ const wss = new SocketServer({ server });
 wss.broadcast = function broadcast(data) {
   wss.clients.forEach(function each(client) {
     //if (client.readyState === SocketServer.OPEN) {
-      client.send(data);
+    client.send(data);
     //}
   });
 };
@@ -33,18 +33,21 @@ wss.on("connection", ws => {
 
   ws.on("message", data => {
     const clientMessage = JSON.parse(data);
-    //console.log(`User ${clientMessage.username} said ${clientMessage.content}`);  
-    console.log(clientMessage);
-    //switch (clientMessage.type) { 
-    //  case 'sendNotif':
+    //console.log(`User ${clientMessage.username} said ${clientMessage.content}`);
+    switch (clientMessage.type) {
+      case "postNotification":
         const sendingMessage = {
-        ...clientMessage,
-        id: uuidv1(),
+          content: clientMessage.content,
+          id: uuidv1(),
+          type: "incomingNotification"
         };
         wss.broadcast(JSON.stringify(sendingMessage));
-    //    break;
-     // default: console.log('Unknow type of message!');  
-   // }
+        break;
+      case "postMessage":
+        break;
+      default:
+        console.log("Unknow type of message!");
+    }
   });
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
