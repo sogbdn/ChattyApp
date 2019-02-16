@@ -2,8 +2,6 @@
 const express = require("express");
 const SocketServer = require("ws").Server;
 const uuidv1 = require("uuid/v1");
-
-// Set the port to 3001
 const PORT = 3001;
 
 // Create a new express server
@@ -32,14 +30,13 @@ wss.on("connection", ws => {
   const connectionUpdate = {
     nbClientConnected,
     type: "connectionUpdate",
-    content: "a user has connected"
+    content: "a user has connected",
+    id: uuidv1()
   };
   wss.broadcast(JSON.stringify(connectionUpdate));
 
   ws.on("message", data => {
     const clientMessage = JSON.parse(data);
-    console.log(clientMessage);
-    //console.log(`User ${clientMessage.username} said ${clientMessage.content}`);
     switch (clientMessage.type) {
       case "postNotification":
         const sendingNotif = {
@@ -70,7 +67,8 @@ wss.on("connection", ws => {
     const connectionUpdate = {
       nbClientConnected,
       type: "connectionUpdate",
-      content: "a user has disconnected"
+      content: "a user has disconnected",
+      id: uuidv1()
     };
     wss.broadcast(JSON.stringify(connectionUpdate));
   });
