@@ -38,3 +38,5 @@ open http://localhost:3001
 - [webpack-dev-server](https://github.com/webpack/webpack-dev-server)
 
 #### Sreenshots
+
+![Sreenshot ChattyApp with several users online](https://github.com/sogbdn/ChattyApp/blob/master/docs/Screenshot%20ChattyApp.png?raw=true)
