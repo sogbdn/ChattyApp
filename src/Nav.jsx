@@ -6,7 +6,7 @@ class Nav extends Component {
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">
-            Chatty
+            ChattyApp
           </a>
           <div id="nbClient">{this.props.nbClientConnected} users online </div>
         </nav>

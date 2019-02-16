@@ -3,7 +3,6 @@ import ChatBar from "./ChatBar.jsx";
 import MessageList from "./MessageList.jsx";
 import Message from "./Message.jsx";
 import Nav from "./Nav.jsx";
-import uuid from "uuid";
 
 class App extends Component {
   // Set initial state so the component is initially "loading"
@@ -48,23 +47,20 @@ class App extends Component {
     this.setState({
       messages: [...this.state.messages, message]
     });
-    console.log(message);
   };
 
-  //Called when the App component is first rendered on the page
+  //Called when App component is first rendered on the page
   componentDidMount() {
     console.log("componentDiMount </App>");
 
     // Connects the application to the WebSocket server and store the WebSocket connection object (this.socket)
     this.socketServer = new WebSocket("ws://localhost:3001/", "protocolOne");
-
     this.socketServer.onopen = event => {
       console.log("Connected to server");
     };
 
     // Incomming message listener
     this.socketServer.onmessage = event => {
-      console.log(event);
       // The socket event is encoded as a JSON string.
       // This line turns it into an object
       const serverMessage = JSON.parse(event.data);
@@ -75,14 +71,12 @@ class App extends Component {
           break;
         case "incomingNotification":
           this.setState({ messages: [...this.state.messages, serverMessage] });
-          console.log(serverMessage);
           break;
         case "connectionUpdate":
-          console.log(serverMessage);
           const newNotification = {
-            content: serverMessage.content,
             type: "incomingNotification",
-            id: serverMessage.id
+            id: serverMessage.id,
+            content: serverMessage.content
           };
 
           this.setState({
@@ -99,7 +93,6 @@ class App extends Component {
   }
 
   render() {
-    //if (this.state.loading) {
     return (
       <div>
         <Nav nbClientConnected={this.state.nbClientConnected} />
