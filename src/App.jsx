@@ -10,7 +10,7 @@ class App extends Component {
     super(props);
     // ONLY time to assign directly to state:
     this.state = {
-      currentUser: { username: "Anonymous" },
+      currentUser: { name: "Anonymous" },
       messages: [] // messages coming from the server will be stored here as they arrive
     };
   }
@@ -40,6 +40,7 @@ class App extends Component {
       username: this.state.currentUser.name,
       content: message
     };
+
     this.socketServer.send(JSON.stringify(newMessage));
   };
 

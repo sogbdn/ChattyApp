@@ -3,7 +3,7 @@ import React, { Component } from "react";
 class ChatBar extends Component {
   constructor(props) {
     super(props);
-    this.state = { username: "", message: "" };
+    this.state = { username: "Anonymous", message: "" };
   }
   // Update the input when typing
   handleNameChange = event => {
